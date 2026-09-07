@@ -9,7 +9,7 @@ class CurrencyHelper {
   CurrencyHelper._();
 
   static final NumberFormat _format = NumberFormat.currency(
-    symbol: 'E£ ',
+    symbol: 'EGP ',
     decimalDigits: 2,
   );
 
