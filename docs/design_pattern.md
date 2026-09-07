@@ -132,11 +132,52 @@ its own storage or migrations.
   and slides when switching months (`AnimatedSwitcher`).
 - `screens/item_form/item_form_screen.dart` — the whole form fades/slides
   in on open (`AnimatedOpacity` + `AnimatedSlide`).
+- `screens/splash/splash_screen.dart` — the launch animation; see its own
+  section below.
+
+## App icon
+
+`assets/icon/icon.png` and `assets/icon/icon_foreground.png` are the two
+master images: the same glowing cyan-to-purple "M" mark with a pink coin
+resting in its valley, at 1024×1024. `icon.png` is full-bleed (used for
+iOS and legacy Android icons); `icon_foreground.png` is the mark alone on
+a transparent background, sized to fit Android's adaptive-icon safe zone,
+paired with the `adaptive_icon_background` color in `pubspec.yaml` so the
+OS can mask/animate it per-launcher.
+
+These are turned into every actual platform icon file by the
+`flutter_launcher_icons` dev dependency — run once after `flutter pub get`:
+
+```bash
+dart run flutter_launcher_icons
+```
+
+This writes the real Android `mipmap-*` and `ic_launcher` files and the
+iOS `AppIcon.appiconset`, so nothing about the icon needs hand-editing
+per platform.
+
+## Splash screen
+
+`screens/splash/splash_screen.dart` is shown first (see `app.dart`) purely
+for a branded launch animation — by the time it builds, `main.dart` has
+already finished opening every Hive box, so it's not gating on any real
+loading state. It plays, in order: the M mark drawing itself in neon
+stroke-by-stroke (via `Path.computeMetrics()` + `extractPath`, animated by
+an `AnimationController`), a coin dropping into the mark's valley with a
+little overshoot (`Curves.elasticOut`), the "MASAREFY" wordmark fading up,
+and a continuous slow glow "breathe" for as long as the splash holds —
+then a fade transition into `HomeScreen`.
+
+The mark is drawn live with a `CustomPainter` (`_MLogoPainter`) using the
+exact same proportions as the app icon, rather than embedding an image —
+so the icon you tap and the animation that greets you feel like one
+continuous piece of motion, at any screen density, with zero extra image
+assets.
 
 ## No login, no server — by design
 
 There is no authentication screen, no network client, and no user account
 model anywhere in this codebase. `main.dart` opens local Hive boxes and
-goes straight to `HomeScreen`. This matches the app's requirement: a
-private, single-user tool that stores everything only on the device it
-runs on.
+then shows `SplashScreen`, which hands off to `HomeScreen`. This matches
+the app's requirement: a private, single-user tool that stores everything
+only on the device it runs on.
