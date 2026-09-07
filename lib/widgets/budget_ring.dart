@@ -40,7 +40,7 @@ class _BudgetRingState extends State<BudgetRing>
       vsync: this,
       duration: const Duration(milliseconds: 900),
     );
-    _animation = Tween<double>(begin: 0, end: widget.fraction.clamp(0, 1.4))
+    _animation = Tween<double>(begin: 0, end: widget.fraction.clamp(0, 1.4).toDouble())
         .animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic));
     _controller.forward();
   }
@@ -51,7 +51,7 @@ class _BudgetRingState extends State<BudgetRing>
     if (oldWidget.fraction != widget.fraction) {
       _animation = Tween<double>(
         begin: _animation.value,
-        end: widget.fraction.clamp(0, 1.4),
+        end: widget.fraction.clamp(0, 1.4).toDouble(),
       ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic));
       _controller
         ..reset()
@@ -120,7 +120,7 @@ class _RingPainter extends CustomPainter {
       ..strokeCap = StrokeCap.round;
     canvas.drawCircle(center, radius, track);
 
-    final sweep = 2 * math.pi * fraction.clamp(0, 1.0);
+    final sweep = 2 * math.pi * fraction.clamp(0, 1.0).toDouble();
 
     // Glow layer: a wider, blurred, translucent stroke underneath the
     // crisp progress stroke — this is what makes the ring look neon
